@@ -75,7 +75,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/get-data-pelanggan/{id}', [TagihanController::class, 'getDataPelanggan']);
         Route::get('tagihan/{tagihan}/bayar', [TagihanController::class, 'bayar'])->name('tagihan.bayar');
         Route::post('tagihan/{tagihan}/bayar', [TagihanController::class, 'prosesBayar'])->name('tagihan.prosesBayar');
+        Route::get('tagihan/{tagihan}/cetak', [App\Http\Controllers\admin\TagihanController::class, 'cetakBukti'])->name('tagihan.cetakBukti');
         Route::get('/get-meter-awal/{pelanggan_id}', [TagihanController::class, 'getMeterAwal'])->name('getMeterAwal');
+
+        Route::get('/informasi', [\App\Http\Controllers\admin\InformasiController::class, 'edit'])->name('informasi.edit');
+        Route::post('/informasi', [\App\Http\Controllers\admin\InformasiController::class, 'update'])->name('informasi.update');
     });
 
     /*
@@ -88,6 +92,11 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('pelanggan')->group(function () {
             Route::get('/dashboard', [PelangganDashboardController::class, 'index'])
                 ->name('pelanggan.dashboard');
+            Route::get('/tagihan-lunas', [PelangganDashboardController::class, 'tagihanLunas'])->name('pelanggan.tagihan_lunas');
+            Route::get('/tagihan-belum-lunas', [PelangganDashboardController::class, 'tagihanBelumLunas'])->name('pelanggan.tagihan_belumlunas');
+            Route::get('/pelanggan/tagihan/{tagihan}/cetak', [PelangganDashboardController::class, 'cetakTagihan'])
+                ->name('pelanggan.cetak')
+                ->middleware('auth');
         });
     });
 });

@@ -4,12 +4,12 @@
 <div class="container">
     <h3>Tambah Tagihan Baru</h3>
 
-    {{-- ✅ Pesan Error Global dari Controller --}}
+    {{-- Pesan Error Global dari Controller --}}
     @if (session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    {{-- ✅ Pesan Validasi --}}
+    {{-- Pesan Validasi --}}
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul class="mb-0">
@@ -36,9 +36,7 @@
                 <label>Bulan</label>
                 <select name="bulan_id" id="bulan_id" class="form-control" required>
                     <option value="">-- Pilih Bulan --</option>
-                    @foreach ($bulans as $b)
-                        <option value="{{ $b->id }}">{{ $b->nama_bulan_tahun }}</option>
-                    @endforeach
+                    {{-- Opsi bulan akan diisi oleh JavaScript --}}
                 </select>
             </div>
         </div>
@@ -51,7 +49,6 @@
             <div class="col-md-4">
                 <label>Meter Akhir</label>
                 <input type="number" name="meter_akhir" id="meter_akhir" class="form-control" required>
-                {{-- ⚠️ Pesan error lokal --}}
                 <small id="errorMeter" class="text-danger" style="display:none;">
                     ⚠️ Meter akhir tidak boleh lebih kecil dari meter awal.
                 </small>
@@ -67,8 +64,14 @@
                 <label>Tarif</label>
                 <select name="tarif_id" id="tarif_id" class="form-control" required>
                     @foreach ($tarifs as $t)
-                        <option value="{{ $t->id }}" data-harga="{{ $t->harga_per_m3 }}" data-denda="{{ $t->biaya_denda }}">
-                            Rp {{ number_format($t->harga_per_m3, 0, ',', '.') }} / m³
+                        {{-- PERBAIKAN FINAL: Menggunakan 'harga_per_m3' sesuai nama kolom database --}}
+                        <option 
+                            value="{{ $t->id }}" 
+                            data-harga="{{ $t->harga_per_m3 }}" 
+                            data-denda="{{ $t->biaya_denda }}" 
+                            data-beban="{{ $t->biaya_beban }}">
+                            Rp {{ number_format($t->harga_per_m3, 0, ',', '.') }} / m³ 
+                            (Beban: Rp {{ number_format($t->biaya_beban, 0, ',', '.') }})
                         </option>
                     @endforeach
                 </select>
@@ -78,6 +81,8 @@
                 <input type="date" name="tanggal_jatuh_tempo" id="tanggal_jatuh_tempo" class="form-control" required>
             </div>
         </div>
+
+        {{-- Input hidden tidak diperlukan lagi karena controller sudah menghitung semuanya --}}
 
         <div class="text-end">
             <button type="submit" class="btn btn-success" id="btnSimpan">Simpan</button>
@@ -94,8 +99,10 @@
                 <th>Meter Akhir</th>
                 <th>Pemakaian (m³)</th>
                 <th>Tarif per m³</th>
+                <th>Biaya Beban</th>
+                <th>Subtotal</th>
                 <th>Denda</th>
-                <th>Total Tagihan</th>
+                <th>Total Bayar</th>
             </tr>
         </thead>
         <tbody>
@@ -104,8 +111,10 @@
                 <td id="tMeterAkhir">-</td>
                 <td id="tPemakaian">-</td>
                 <td id="tTarif">-</td>
+                <td id="tBeban">-</td>
+                <td id="tSubtotal">-</td>
                 <td id="tDenda">-</td>
-                <td id="tTotal">-</td>
+                <td id="tTotalBayar">-</td>
             </tr>
         </tbody>
     </table>
@@ -123,61 +132,99 @@ document.addEventListener('DOMContentLoaded', function () {
     const errorMeter = document.getElementById('errorMeter');
     const btnSimpan = document.getElementById('btnSimpan');
 
-    pelangganSelect.addEventListener('change', function () {
+    function initEventListeners() {
+        pelangganSelect.addEventListener('change', fetchPelangganData);
+        meterAkhirInput.addEventListener('input', hitungPreview);
+        tarifSelect.addEventListener('change', hitungPreview);
+        jatuhTempoInput.addEventListener('change', hitungPreview);
+    }
+
+    function fetchPelangganData() {
         const pelangganId = this.value;
-        if (!pelangganId) return;
+        if (!pelangganId) {
+            resetForm();
+            return;
+        }
 
         fetch(`/admin/get-data-pelanggan/${pelangganId}`)
             .then(res => res.json())
             .then(data => {
                 meterAwalInput.value = data.meter_awal ?? 0;
-                bulanSelect.innerHTML = '<option value="">-- Pilih Bulan --</option>';
+                
+                let bulanOptions = '<option value="">-- Pilih Bulan --</option>';
                 data.bulanTersedia.forEach(b => {
-                    bulanSelect.innerHTML += `<option value="${b.id}">${b.nama_bulan_tahun}</option>`;
+                    bulanOptions += `<option value="${b.id}">${b.nama_bulan_tahun}</option>`;
                 });
+                bulanSelect.innerHTML = bulanOptions;
+                
                 hitungPreview();
             });
-    });
+    }
 
-    [meterAkhirInput, tarifSelect, jatuhTempoInput].forEach(el => {
-        el.addEventListener('input', hitungPreview);
-    });
+    function formatRupiah(angka) {
+        return 'Rp ' + (angka ? angka.toLocaleString('id-ID') : '0');
+    }
+    
+    function resetForm() {
+        meterAwalInput.value = '';
+        meterAkhirInput.value = '';
+        pemakaianInput.value = '';
+        bulanSelect.innerHTML = '<option value="">-- Pilih Bulan --</option>';
+        hitungPreview();
+    }
 
     function hitungPreview() {
         const awal = parseFloat(meterAwalInput.value) || 0;
         const akhir = parseFloat(meterAkhirInput.value) || 0;
-        const tarif = parseFloat(tarifSelect.selectedOptions[0].dataset.harga) || 0;
-        const denda = parseFloat(tarifSelect.selectedOptions[0].dataset.denda) || 0;
-        const jatuhTempo = new Date(jatuhTempoInput.value);
+        
+        const selectedTarif = tarifSelect.selectedOptions[0];
+        if (!selectedTarif) return;
+        
+        const tarif = parseFloat(selectedTarif.dataset.harga) || 0;
+        const dendaTarif = parseFloat(selectedTarif.dataset.denda) || 0;
+        const beban = parseFloat(selectedTarif.dataset.beban) || 0;
+        
+        const jatuhTempoValue = jatuhTempoInput.value;
+        const jatuhTempo = jatuhTempoValue ? new Date(jatuhTempoValue) : null;
         const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-        // 🔹 Validasi meter akhir
-        if (akhir < awal) {
-            errorMeter.style.display = 'block';
-            meterAkhirInput.classList.add('is-invalid');
-            pemakaianInput.value = 0;
-            btnSimpan.disabled = true;
-        } else {
+        let pemakaian = 0;
+        if (akhir >= awal) {
+            pemakaian = akhir - awal;
             errorMeter.style.display = 'none';
             meterAkhirInput.classList.remove('is-invalid');
-            pemakaianInput.value = akhir - awal;
             btnSimpan.disabled = false;
+        } else {
+            pemakaian = 0; // Pastikan pemakaian 0 jika tidak valid
+            errorMeter.style.display = 'block';
+            meterAkhirInput.classList.add('is-invalid');
+            btnSimpan.disabled = true;
+        }
+        pemakaianInput.value = pemakaian;
+
+        const subtotal = (pemakaian * tarif) + beban;
+
+        let totalDenda = 0;
+        if (jatuhTempo && today > jatuhTempo) {
+            totalDenda = dendaTarif;
         }
 
-        const pemakaian = parseFloat(pemakaianInput.value) || 0;
-        let totalDenda = 0;
-        if (jatuhTempo && today > jatuhTempo) totalDenda = denda;
+        const totalBayar = subtotal + totalDenda;
 
-        const total = (pemakaian * tarif) + totalDenda;
-
-        // 🔹 Update preview
         document.getElementById('tMeterAwal').innerText = awal;
         document.getElementById('tMeterAkhir').innerText = akhir;
         document.getElementById('tPemakaian').innerText = pemakaian;
-        document.getElementById('tTarif').innerText = 'Rp ' + tarif.toLocaleString('id-ID');
-        document.getElementById('tDenda').innerText = 'Rp ' + totalDenda.toLocaleString('id-ID');
-        document.getElementById('tTotal').innerText = 'Rp ' + total.toLocaleString('id-ID');
+        document.getElementById('tTarif').innerText = formatRupiah(tarif);
+        document.getElementById('tBeban').innerText = formatRupiah(beban);
+        document.getElementById('tSubtotal').innerText = formatRupiah(subtotal);
+        document.getElementById('tDenda').innerText = formatRupiah(totalDenda);
+        document.getElementById('tTotalBayar').innerText = formatRupiah(totalBayar);
     }
+
+    initEventListeners();
+    hitungPreview();
 });
 </script>
 @endsection
+

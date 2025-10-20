@@ -6,7 +6,13 @@
 
     <div class="card p-3">
         <p><strong>Bulan:</strong> {{ $tagihan->bulan->nama_bulan_tahun }}</p>
-        <p><strong>Total Tagihan:</strong> Rp {{ number_format($tagihan->total_tagihan, 0, ',', '.') }}</p>
+        <p><strong>Pemakaian:</strong> {{ $tagihan->pemakaian }} m³</p>
+        <p><strong>Biaya Beban:</strong> Rp {{ number_format($tagihan->tarif->biaya_beban, 0, ',', '.') }}</p>
+        <p><strong>Harga per m³:</strong> Rp {{ number_format($tagihan->tarif->harga_per_m3, 0, ',', '.') }}</p>
+        <p><strong>Total Pemakaian:</strong> Rp {{ number_format($tagihan->total_tagihan, 0, ',', '.') }}</p>
+        <p><strong>Denda:</strong> Rp {{ number_format($denda, 0, ',', '.') }}</p>
+        <hr>
+        <h4><strong>Total Tagihan (termasuk denda):</strong> Rp {{ number_format($total, 0, ',', '.') }}</h4>
         <p><strong>Jatuh Tempo:</strong> {{ $tagihan->tanggal_jatuh_tempo }}</p>
 
         <form action="{{ route('tagihan.prosesBayar', $tagihan->id) }}" method="POST">

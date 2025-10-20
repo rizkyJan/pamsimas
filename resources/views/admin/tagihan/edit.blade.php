@@ -4,12 +4,23 @@
 <div class="container">
     <h2 class="mb-4">✏️ Edit Tagihan</h2>
 
+    {{-- PENTING: Tampilkan pesan error validasi --}}
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form action="{{ route('tagihan.update', $tagihan->id) }}" method="POST">
         @csrf
         @method('PUT')
 
         <div class="row mb-3">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label>Pelanggan</label>
                 <select name="pelanggan_id" class="form-control">
                     @foreach($pelanggans as $p)
@@ -20,7 +31,7 @@
                 </select>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label>Bulan</label>
                 <select name="bulan_id" class="form-control">
                     @foreach($bulans as $b)
@@ -30,8 +41,20 @@
                     @endforeach
                 </select>
             </div>
+        </div>
 
-            <div class="col-md-4">
+        <div class="row mb-3">
+            {{-- TAMBAHKAN KEMBALI INPUT METER --}}
+            <div class="col-md-3">
+                <label>Meter Awal</label>
+                <input type="number" name="meter_awal" class="form-control" value="{{ $tagihan->meter_awal }}">
+            </div>
+            <div class="col-md-3">
+                <label>Meter Akhir</label>
+                <input type="number" name="meter_akhir" class="form-control" value="{{ $tagihan->meter_akhir }}">
+            </div>
+
+            <div class="col-md-3">
                 <label>Tarif</label>
                 <select name="tarif_id" class="form-control">
                     @foreach($tarifs as $t)
@@ -41,20 +64,15 @@
                     @endforeach
                 </select>
             </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label>Pemakaian (m³)</label>
-                <input type="number" name="pemakaian" class="form-control" value="{{ $tagihan->pemakaian }}">
-            </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label>Tanggal Jatuh Tempo</label>
                 <input type="date" name="tanggal_jatuh_tempo" class="form-control" value="{{ $tagihan->tanggal_jatuh_tempo }}">
             </div>
         </div>
+        
+        {{-- HAPUS INPUT PEMAKAIAN KARENA SUDAH DIHITUNG OTOMATIS OLEH CONTROLLER --}}
 
-        <button class="btn btn-primary">Update</button>
+        <button type="submit" class="btn btn-primary">Update</button>
         <a href="{{ route('tagihan.index') }}" class="btn btn-secondary">Kembali</a>
     </form>
 </div>

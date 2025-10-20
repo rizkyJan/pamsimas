@@ -6,6 +6,13 @@
         {{-- Header --}}
         <h2 class="fw-bold">Selamat Datang, {{ $user->name }} 👋</h2>
         <p class="text-muted">Status akun: <strong>{{ ucfirst($pelanggan->status ?? 'Belum terdaftar') }}</strong></p>
+        @if ($informasi)
+            <div class="alert alert-info mt-3">
+                <h5 class="fw-bold">{{ $informasi->judul }}</h5>
+                <p class="mb-0">{{ $informasi->isi }}</p>
+            </div>
+        @endif
+
 
         {{-- Info Pelanggan --}}
         <div class="card shadow-sm mt-4">
@@ -33,7 +40,7 @@
             <div class="col-md-4 mb-3">
                 <div class="card border-0 shadow-sm text-center p-3 bg-info text-white">
                     <h6>Pemakaian Akhir Saat Ini</h6>
-                    <h3 class="fw-bold">{{ $pemakaian }} m³</h3>
+                    <h3 class="fw-bold">{{ $pemakaian_akhir }} m³</h3>
                 </div>
             </div>
 
@@ -71,12 +78,12 @@
                                         <td>{{ $tagihan->pemakaian }}</td>
                                         <td>Rp {{ number_format($tagihan->total_tagihan, 0, ',', '.') }}</td>
                                         <td>
-    @if (strtolower($tagihan->status) === 'sudah bayar')
-        <span class="badge bg-success text-light px-3 py-2">sudah bayar</span>
-    @else
-        <span class="badge bg-danger text-light px-3 py-2">belum bayar</span>
-    @endif
-</td>
+                                            @if (strtolower($tagihan->status) === 'sudah bayar')
+                                                <span class="badge bg-success text-light px-3 py-2">sudah bayar</span>
+                                            @else
+                                                <span class="badge bg-danger text-light px-3 py-2">belum bayar</span>
+                                            @endif
+                                        </td>
 
                                     </tr>
                                 @endforeach
