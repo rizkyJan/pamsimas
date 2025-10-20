@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h2>Tambah Bulan Baru</h2>
-    <form action="{{ route('bulan.store') }}" method="POST">
+    <form action="{{ route('admin.bulan.store') }}" method="POST">
         @csrf
         <div class="mb-3">
             <label>Nama Bulan-Tahun</label>
@@ -21,7 +21,7 @@
         </div>
 
         <button class="btn btn-success">Simpan</button>
-        <a href="{{ route('bulan.index') }}" class="btn btn-secondary">Kembali</a>
+        <a href="{{ route('admin.bulan.index') }}" class="btn btn-secondary">Kembali</a>
     </form>
 </div>
 @endsection

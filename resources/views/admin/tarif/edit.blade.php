@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h2>Edit Tarif</h2>
-    <form action="{{ route('tarif.update', $tarif->id) }}" method="POST">
+    <form action="{{ route('admin.tarif.update', $tarif->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -28,7 +28,7 @@
         </div>
 
         <button class="btn btn-primary">Update</button>
-        <a href="{{ route('tarif.index') }}" class="btn btn-secondary">Kembali</a>
+        <a href="{{ route('admin.tarif.index') }}" class="btn btn-secondary">Kembali</a>
     </form>
 </div>
 @endsection

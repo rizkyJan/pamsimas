@@ -27,6 +27,6 @@ class InformasiController extends Controller
             'isi' => $request->isi,
         ]);
 
-        return redirect()->route('informasi.edit')->with('success', 'Informasi berhasil diperbarui!');
+        return redirect()->route('admin.informasi.edit')->with('success', 'Informasi berhasil diperbarui!');
     }
 }

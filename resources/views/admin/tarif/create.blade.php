@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h2>Tambah Tarif Baru</h2>
-    <form action="{{ route('tarif.store') }}" method="POST">
+    <form action="{{ route('admin.tarif.store') }}" method="POST">
         @csrf
         <div class="mb-3">
             <label>Nama Tarif</label>
@@ -26,7 +26,7 @@
         </div>
 
         <button class="btn btn-success">Simpan</button>
-        <a href="{{ route('tarif.index') }}" class="btn btn-secondary">Kembali</a>
+        <a href="{{ route('admin.tarif.index') }}" class="btn btn-secondary">Kembali</a>
     </form>
 </div>
 @endsection

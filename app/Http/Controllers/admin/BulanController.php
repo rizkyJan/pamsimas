@@ -28,12 +28,12 @@ class BulanController extends Controller
         ]);
 
         Bulan::create($request->all());
-        return redirect()->route('bulan.index')->with('success', 'Data bulan berhasil ditambahkan.');
+        return redirect()->route('admin.bulan.index')->with('success', 'Data bulan berhasil ditambahkan.');
     }
 
     public function edit(Bulan $bulan)
     {
-        return view('bulan.edit', compact('bulan'));
+        return view('admin.bulan.edit', compact('bulan'));
     }
 
     public function update(Request $request, Bulan $bulan)
@@ -45,12 +45,12 @@ class BulanController extends Controller
         ]);
 
         $bulan->update($request->all());
-        return redirect()->route('bulan.index')->with('success', 'Data bulan berhasil diperbarui.');
+        return redirect()->route('admin.bulan.index')->with('success', 'Data bulan berhasil diperbarui.');
     }
 
     public function destroy(Bulan $bulan)
     {
         $bulan->delete();
-        return redirect()->route('bulan.index')->with('success', 'Data bulan berhasil dihapus.');
+        return redirect()->route('admin.bulan.index')->with('success', 'Data bulan berhasil dihapus.');
     }
 }

@@ -15,7 +15,7 @@
         </div>
     @endif
 
-    <form action="{{ route('tagihan.update', $tagihan->id) }}" method="POST">
+    <form action="{{ route('admin.tagihan.update', $tagihan->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -73,7 +73,7 @@
         {{-- HAPUS INPUT PEMAKAIAN KARENA SUDAH DIHITUNG OTOMATIS OLEH CONTROLLER --}}
 
         <button type="submit" class="btn btn-primary">Update</button>
-        <a href="{{ route('tagihan.index') }}" class="btn btn-secondary">Kembali</a>
+        <a href="{{ route('admin.tagihan.index') }}" class="btn btn-secondary">Kembali</a>
     </form>
 </div>
 @endsection

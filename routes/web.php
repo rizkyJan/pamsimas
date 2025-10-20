@@ -8,9 +8,10 @@ use App\Http\Controllers\admin\BulanController;
 use App\Http\Controllers\admin\TarifController;
 use App\Http\Controllers\admin\TagihanController;
 use App\Http\Controllers\admin\PelangganController;
+use App\Http\Controllers\admin\PengaduanController; // DITAMBAHKAN
 use App\Http\Controllers\admin\DashboardController as AdminDashboard;
-use App\Http\Controllers\pelanggan\DashboardController as PelangganDashboard;
 use App\Http\Controllers\pelanggan\PelangganDashboardController;
+use App\Http\Controllers\Pelanggan\PengaduanPelangganController; // DITAMBAHKAN
 
 /*
 |--------------------------------------------------------------------------
@@ -56,8 +57,8 @@ Route::middleware(['auth'])->group(function () {
     | Akses hanya untuk user dengan role = 'admin'
     | Menggunakan middleware IsAdmin secara langsung tanpa daftar di Kernel.php
     */
-    Route::middleware([IsAdmin::class])->prefix('admin')->group(function () {
-        Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('admin.dashboard');
+    Route::middleware([IsAdmin::class])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
 
         // CRUD Data Pelanggan
         Route::resource('/pelanggan', PelangganController::class);
@@ -70,8 +71,6 @@ Route::middleware(['auth'])->group(function () {
 
         // CRUD Data Tagihan
         Route::resource('/tagihan', TagihanController::class);
-        // Route::get('/tagihan/{id}/bayar', [TagihanController::class, 'bayar'])
-        //     ->name('tagihan.bayar');
         Route::get('/get-data-pelanggan/{id}', [TagihanController::class, 'getDataPelanggan']);
         Route::get('tagihan/{tagihan}/bayar', [TagihanController::class, 'bayar'])->name('tagihan.bayar');
         Route::post('tagihan/{tagihan}/bayar', [TagihanController::class, 'prosesBayar'])->name('tagihan.prosesBayar');
@@ -80,6 +79,13 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/informasi', [\App\Http\Controllers\admin\InformasiController::class, 'edit'])->name('informasi.edit');
         Route::post('/informasi', [\App\Http\Controllers\admin\InformasiController::class, 'update'])->name('informasi.update');
+
+        // --- Fitur Manajemen Pengaduan untuk Admin --- DITAMBAHKAN
+        Route::prefix('pengaduan')->name('pengaduan.')->group(function () {
+            Route::get('/', [PengaduanController::class, 'index'])->name('index');
+            Route::get('/{pengaduan}', [PengaduanController::class, 'show'])->name('show');
+            Route::put('/{pengaduan}', [PengaduanController::class, 'tanggapi'])->name('tanggapi');
+        });
     });
 
     /*
@@ -89,14 +95,24 @@ Route::middleware(['auth'])->group(function () {
     | Akses khusus pelanggan (role = 'pelanggan')
     */
     Route::middleware(['auth'])->group(function () {
-        Route::prefix('pelanggan')->group(function () {
+        Route::prefix('pelanggan')->name('pelanggan.')->group(function () {
             Route::get('/dashboard', [PelangganDashboardController::class, 'index'])
-                ->name('pelanggan.dashboard');
-            Route::get('/tagihan-lunas', [PelangganDashboardController::class, 'tagihanLunas'])->name('pelanggan.tagihan_lunas');
-            Route::get('/tagihan-belum-lunas', [PelangganDashboardController::class, 'tagihanBelumLunas'])->name('pelanggan.tagihan_belumlunas');
-            Route::get('/pelanggan/tagihan/{tagihan}/cetak', [PelangganDashboardController::class, 'cetakTagihan'])
-                ->name('pelanggan.cetak')
+                ->name('dashboard');
+            Route::get('/tagihan-lunas', [PelangganDashboardController::class, 'tagihanLunas'])->name('tagihan_lunas');
+            Route::get('/tagihan-belum-lunas', [PelangganDashboardController::class, 'tagihanBelumLunas'])->name('tagihan_belumlunas');
+            Route::get('/tagihan/{tagihan}/cetak', [PelangganDashboardController::class, 'cetakTagihan'])
+                ->name('cetak')
                 ->middleware('auth');
+
+            // --- Fitur Pengaduan untuk Pelanggan --- DITAMBAHKAN
+            Route::prefix('pengaduan')->name('pengaduan.')->group(function () {
+                Route::get('/', [PengaduanPelangganController::class, 'index'])->name('index');
+                Route::get('/create', [PengaduanPelangganController::class, 'create'])->name('create');
+                Route::post('/', [PengaduanPelangganController::class, 'store'])->name('store');
+                Route::get('/{pengaduan}', [PengaduanPelangganController::class, 'show'])->name('show');
+                Route::put('/{pengaduan}/selesaikan', [PengaduanPelangganController::class, 'selesaikan'])->name('selesaikan');
+            });
         });
     });
 });
+

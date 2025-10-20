@@ -48,9 +48,9 @@
         </table>
 
         <div class="d-flex justify-content-between mt-3">
-            <a href="{{ route('tagihan.index') }}" class="btn btn-secondary">Kembali ke Daftar Tagihan</a>
+            <a href="{{ route('admin.tagihan.index') }}" class="btn btn-secondary">Kembali ke Daftar Tagihan</a>
             {{-- Tombol ini sekarang aktif dan membuka PDF di tab baru --}}
-            <a href="{{ route('tagihan.cetakBukti', $tagihan->id) }}" class="btn btn-primary" target="_blank">Cetak Bukti Pembayaran</a>
+            <a href="{{ route('admin.tagihan.cetakBukti', $tagihan->id) }}" class="btn btn-primary" target="_blank">Cetak Bukti Pembayaran</a>
         </div>
     </div>
 </div>

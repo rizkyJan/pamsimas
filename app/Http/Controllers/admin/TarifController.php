@@ -29,12 +29,12 @@ class TarifController extends Controller
         ]);
 
         Tarif::create($request->all());
-        return redirect()->route('tarif.index')->with('success', 'Tarif berhasil ditambahkan.');
+        return redirect()->route('admin.tarif.index')->with('success', 'Tarif berhasil ditambahkan.');
     }
 
     public function edit(Tarif $tarif)
     {
-        return view('tarif.edit', compact('tarif'));
+        return view('admin.tarif.edit', compact('tarif'));
     }
 
     public function update(Request $request, Tarif $tarif)
@@ -47,12 +47,12 @@ class TarifController extends Controller
         ]);
 
         $tarif->update($request->all());
-        return redirect()->route('tarif.index')->with('success', 'Tarif berhasil diperbarui.');
+        return redirect()->route('admin.tarif.index')->with('success', 'Tarif berhasil diperbarui.');
     }
 
     public function destroy(Tarif $tarif)
     {
         $tarif->delete();
-        return redirect()->route('tarif.index')->with('success', 'Tarif berhasil dihapus.');
+        return redirect()->route('admin.tarif.index')->with('success', 'Tarif berhasil dihapus.');
     }
 }

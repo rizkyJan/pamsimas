@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h2 class="mb-3">Data Bulan</h2>
-    <a href="{{ route('bulan.create') }}" class="btn btn-primary mb-3">➕ Tambah Bulan</a>
+    <a href="{{ route('admin.bulan.create') }}" class="btn btn-primary mb-3">➕ Tambah Bulan</a>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -27,8 +27,8 @@
                 <td>{{ $b->bulan }}</td>
                 <td>{{ $b->tahun }}</td>
                 <td>
-                    <a href="{{ route('bulan.edit', $b->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                    <form action="{{ route('bulan.destroy', $b->id) }}" method="POST" style="display:inline-block;">
+                    <a href="{{ route('admin.bulan.edit', $b->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                    <form action="{{ route('admin.bulan.destroy', $b->id) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
                         <button onclick="return confirm('Hapus bulan ini?')" class="btn btn-danger btn-sm">Hapus</button>

@@ -49,7 +49,7 @@ class PelangganController extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect()->route('pelanggan.index')->with('success', 'Pelanggan berhasil ditambahkan!');
+        return redirect()->route('admin.pelanggan.index')->with('success', 'Pelanggan berhasil ditambahkan!');
     }
 
     public function edit(Pelanggan $pelanggan)
@@ -68,7 +68,7 @@ class PelangganController extends Controller
 
         $pelanggan->update($request->only(['nama_pelanggan', 'alamat', 'no_hp', 'status']));
 
-        return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan diperbarui!');
+        return redirect()->route('admin.pelanggan.index')->with('success', 'Data pelanggan diperbarui!');
     }
 
     public function destroy(Pelanggan $pelanggan)

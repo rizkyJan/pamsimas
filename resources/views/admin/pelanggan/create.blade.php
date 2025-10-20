@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h2>Tambah Pelanggan</h2>
-    <form action="{{ route('pelanggan.store') }}" method="POST">
+    <form action="{{ route('admin.pelanggan.store') }}" method="POST">
         @csrf
 
         <div class="mb-3">
@@ -40,7 +40,7 @@
         </div>
 
         <button type="submit" class="btn btn-success">Simpan</button>
-        <a href="{{ route('pelanggan.index') }}" class="btn btn-secondary">Kembali</a>
+        <a href="{{ route('admin.pelanggan.index') }}" class="btn btn-secondary">Kembali</a>
     </form>
 </div>
 @endsection

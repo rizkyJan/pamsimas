@@ -83,7 +83,7 @@ class TagihanController extends Controller
             'status' => 'belum bayar'
         ]);
 
-        return redirect()->route('tagihan.index')->with('success', 'Tagihan berhasil ditambahkan');
+        return redirect()->route('admin.tagihan.index')->with('success', 'Tagihan berhasil ditambahkan');
     }
 
     /**
@@ -148,7 +148,7 @@ class TagihanController extends Controller
             'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
         ]);
 
-        return redirect()->route('tagihan.index')->with('success', 'Tagihan berhasil diperbarui.');
+        return redirect()->route('admin.tagihan.index')->with('success', 'Tagihan berhasil diperbarui.');
     }
 
     /**
@@ -157,7 +157,7 @@ class TagihanController extends Controller
     public function destroy(Tagihan $tagihan)
     {
         $tagihan->delete();
-        return redirect()->route('tagihan.index')->with('success', 'Tagihan berhasil dihapus.');
+        return redirect()->route('admin.tagihan.index')->with('success', 'Tagihan berhasil dihapus.');
     }
 
     /**

@@ -15,7 +15,7 @@
         <h4><strong>Total Tagihan (termasuk denda):</strong> Rp {{ number_format($total, 0, ',', '.') }}</h4>
         <p><strong>Jatuh Tempo:</strong> {{ $tagihan->tanggal_jatuh_tempo }}</p>
 
-        <form action="{{ route('tagihan.prosesBayar', $tagihan->id) }}" method="POST">
+        <form action="{{ route('admin.tagihan.prosesBayar', $tagihan->id) }}" method="POST">
             @csrf
             <div class="mb-3">
                 <label>Jumlah Bayar</label>
@@ -26,7 +26,7 @@
     </div>
 
     <div class="mt-3">
-        <a href="{{ route('tagihan.index') }}" class="btn btn-secondary">Kembali ke Tagihan</a>
+        <a href="{{ route('admin.tagihan.index') }}" class="btn btn-secondary">Kembali ke Tagihan</a>
     </div>
 </div>
 @endsection

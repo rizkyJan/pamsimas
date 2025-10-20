@@ -20,7 +20,7 @@
         </div>
     @endif
 
-    <form action="{{ route('tagihan.store') }}" method="POST" id="formTagihan">
+    <form action="{{ route('admin.tagihan.store') }}" method="POST" id="formTagihan">
         @csrf
         <div class="row mb-3">
             <div class="col-md-6">
