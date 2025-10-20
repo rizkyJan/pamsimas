@@ -32,20 +32,27 @@
 
                     {{-- Menu khusus admin --}}
                     @if (auth()->user()->role === 'admin')
-                        <li class="nav-item"><a href="{{ route('pelanggan.index') }}"
-                                class="nav-link {{ request()->routeIs('pelanggan.index') ? 'active' : '' }}">Pelanggan</a>
+                        <li class="nav-item"><a href="{{ route('admin.pelanggan.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.pelanggan.*') ? 'active' : '' }}">Pelanggan</a>
                         </li>
-                        <li class="nav-item"><a href="{{ route('bulan.index') }}"
-                                class="nav-link {{ request()->routeIs('bulan.index') ? 'active' : '' }}">Bulan</a></li>
-                        <li class="nav-item"><a href="{{ route('tarif.index') }}"
-                                class="nav-link {{ request()->routeIs('tarif.index') ? 'active' : '' }}">Tarif</a></li>
-                        <li class="nav-item"><a href="{{ route('tagihan.index') }}"
-                                class="nav-link {{ request()->routeIs('tagihan.index') ? 'active' : '' }}">Tagihan</a>
+                        <li class="nav-item"><a href="{{ route('admin.bulan.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.bulan.*') ? 'active' : '' }}">Bulan</a></li>
+                        <li class="nav-item"><a href="{{ route('admin.tarif.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.tarif.*') ? 'active' : '' }}">Tarif</a></li>
+                        <li class="nav-item"><a href="{{ route('admin.tagihan.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.tagihan.*') ? 'active' : '' }}">Tagihan</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('informasi.edit') }}"
-                                class="nav-link {{ request()->routeIs('informasi.edit') ? 'active' : '' }}">
+                            <a href="{{ route('admin.informasi.edit') }}"
+                                class="nav-link {{ request()->routeIs('admin.informasi.*') ? 'active' : '' }}">
                                 Informasi
+                            </a>
+                        </li>
+                        {{-- MENU PENGADUAN BARU UNTUK ADMIN --}}
+                        <li class="nav-item">
+                            <a href="{{ route('admin.pengaduan.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.pengaduan.*') ? 'active' : '' }}">
+                                Pengaduan
                             </a>
                         </li>
                     @endif
@@ -62,6 +69,13 @@
                             <a href="{{ route('pelanggan.tagihan_belumlunas') }}"
                                 class="nav-link {{ request()->routeIs('pelanggan.tagihan_belumlunas') ? 'active' : '' }}">
                                 Tagihan Belum Lunas
+                            </a>
+                        </li>
+                        {{-- MENU PENGADUAN BARU UNTUK PELANGGAN --}}
+                        <li class="nav-item">
+                            <a href="{{ route('pelanggan.pengaduan.index') }}"
+                                class="nav-link {{ request()->routeIs('pelanggan.pengaduan.*') ? 'active' : '' }}">
+                                Pengaduan
                             </a>
                         </li>
                     @endif
